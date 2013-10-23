@@ -165,7 +165,7 @@ static ssize_t conservative_stats_store(struct kgsl_device *device,
 	return count;
 }
 
-PWRSCALE_POLICY_ATTR(print_stats, 0644, conservative_stats_show,
+PWRSCALE_POLICY_ATTR(print_stats, 0664, conservative_stats_show,
 		     conservative_stats_store);
 
 static ssize_t conservative_polling_interval_show(struct kgsl_device *device, struct kgsl_pwrscale
@@ -201,7 +201,7 @@ static ssize_t conservative_polling_interval_store(struct kgsl_device *device, s
 	return count;
 }
 
-PWRSCALE_POLICY_ATTR(polling_interval, 0644, conservative_polling_interval_show,
+PWRSCALE_POLICY_ATTR(polling_interval, 0664, conservative_polling_interval_show,
 		     conservative_polling_interval_store);
 
 static ssize_t conservative_threshold_table_show(struct kgsl_device *device, struct kgsl_pwrscale
@@ -246,7 +246,7 @@ static ssize_t conservative_threshold_table_store(struct kgsl_device *device, st
 	return err;
 }
 
-PWRSCALE_POLICY_ATTR(threshold_table, 0644, conservative_threshold_table_show,
+PWRSCALE_POLICY_ATTR(threshold_table, 0664, conservative_threshold_table_show,
 		     conservative_threshold_table_store);
 
 static ssize_t conservative_boosted_pwrlevel_show(struct kgsl_device *device, struct kgsl_pwrscale
@@ -282,7 +282,7 @@ static ssize_t conservative_boosted_pwrlevel_store(struct kgsl_device *device, s
 	return count;
 }
 
-PWRSCALE_POLICY_ATTR(boosted_pwrlevel, 0644, conservative_boosted_pwrlevel_show,
+PWRSCALE_POLICY_ATTR(boosted_pwrlevel, 0664, conservative_boosted_pwrlevel_show,
 		     conservative_boosted_pwrlevel_store);
 
 static struct attribute *conservative_attrs[] = {
