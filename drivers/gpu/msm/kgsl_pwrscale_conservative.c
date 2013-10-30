@@ -55,6 +55,7 @@ static struct gpu_thresh_tbl thresh_tbl[] = {
 };
 
 #define BOOSTED_POWERLEVEL 2
+static unsigned int enable_boost = 0;
 static unsigned int boosted_pwrlevel = BOOSTED_POWERLEVEL;
 
 static void conservative_wake(struct kgsl_device *device,
@@ -83,7 +84,7 @@ static void conservative_idle(struct kgsl_device *device,
 	int val = 0;
 	unsigned int loadpct;
 
-	if (mako_boosted == 1) {
+	if (enable_boost == 1 && mako_boosted == 1) {
 		if (boosted_pwrlevel < pwr->active_pwrlevel)
 			kgsl_pwrctrl_pwrlevel_change(device, boosted_pwrlevel);
 
@@ -285,11 +286,43 @@ static ssize_t conservative_boosted_pwrlevel_store(struct kgsl_device *device, s
 PWRSCALE_POLICY_ATTR(boosted_pwrlevel, 0664, conservative_boosted_pwrlevel_show,
 		     conservative_boosted_pwrlevel_store);
 
+static ssize_t conservative_boost_enabled_show(struct kgsl_device *device, struct kgsl_pwrscale
+						  *pwrscale, char *buf)
+{
+	return sprintf(buf, "%d\n", enable_boost);
+}
+
+static ssize_t conservative_boost_enabled_store(struct kgsl_device *device, struct kgsl_pwrscale
+						   *pwrscale, const char *buf,
+						   size_t count)
+{
+	unsigned long tmp;
+	int err;
+
+	err = kstrtoul(buf, 0, &tmp);
+	if (err) {
+		pr_err("%s: failed enabling/disabling boost!\n", KGSL_NAME);
+		return err;
+	}
+
+	enable_boost = tmp;
+
+	if (g_show_stats == 1)
+		pr_info("%s: boost %s\n", KGSL_NAME,
+			enable_boost ? "enabled" : "disabled");
+
+	return count;
+}
+
+PWRSCALE_POLICY_ATTR(boost_enabled, 0644, conservative_boost_enabled_show,
+		     conservative_boost_enabled_store);
+
 static struct attribute *conservative_attrs[] = {
 	&policy_attr_print_stats.attr,
 	&policy_attr_polling_interval.attr,
 	&policy_attr_threshold_table.attr,
 	&policy_attr_boosted_pwrlevel.attr,
+	&policy_attr_boost_enabled.attr,
 	NULL
 };
 
