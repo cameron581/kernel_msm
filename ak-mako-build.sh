@@ -10,7 +10,7 @@ clear
 
 # AK Kernel Version
 BASE_AK_VER="AK"
-VER=".133.CM11"
+VER=".200.KK"
 AK_VER=$BASE_AK_VER$VER
 
 # AK Variables
@@ -46,7 +46,7 @@ MODULES_DIR=${HOME}/android/AK-anykernel/cwm/system/lib/modules
 KERNEL_DIR=`pwd`
 OUTPUT_DIR=${HOME}/android/AK-anykernel/zip
 CWM_DIR=${HOME}/android/AK-anykernel/cwm
-ZIMAGE_DIR=${HOME}/android/AK-xCrossing/arch/arm/boot
+ZIMAGE_DIR=${HOME}/android/AK-xAosp/arch/arm/boot
 CWM_MOVE=/home/anarkia1976/Desktop/AK-Kernel
 ZIMAGE_ANYKERNEL=${HOME}/android/AK-anykernel/cwm/kernel
 ANYKERNEL_DIR=${HOME}/android/AK-anykernel
@@ -69,7 +69,7 @@ echo "Making: AK Mako Defconfig"
 echo "-------------------------"
 echo -e "${restore}"
 
-make "cyanogen_mako_defconfig"
+make "mako_defconfig"
 #make -j3 > /dev/null
 make -j3
 
