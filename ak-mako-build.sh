@@ -69,7 +69,7 @@ echo "Making: AK Mako Defconfig"
 echo "-------------------------"
 echo -e "${restore}"
 
-make "cyanogen_mako_defconfig"
+make "ak_mako_defconfig"
 #make -j3 > /dev/null
 make -j3
 
