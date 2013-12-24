@@ -727,6 +727,8 @@ void __init efi_init(void)
 	}
 #endif
 
+	set_bit(EFI_MEMMAP, &x86_efi_facility);
+
 #if EFI_DEBUG
 	print_efi_memmap();
 #endif
