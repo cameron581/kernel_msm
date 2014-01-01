@@ -10,12 +10,12 @@ clear
 
 # AK Kernel Version
 BASE_AK_VER="AK"
-VER=".200.CM11"
+VER=".001.XGENESIS"
 AK_VER=$BASE_AK_VER$VER
 
 # AK Variables
 export LOCALVERSION="~"`echo $AK_VER`
-export CROSS_COMPILE=${HOME}/android/AK-linaro/4.8.2-2013.10.20131030/bin/arm-linux-gnueabihf-
+export CROSS_COMPILE=${HOME}/android/AK-linaro/4.8.3-2013.11.20131205/bin/arm-linux-gnueabihf-
 #export CROSS_COMPILE=${HOME}/android/AK-linaro/4.7.3-2013.04.20130415/bin/arm-linux-gnueabihf-
 export ARCH=arm
 export SUBARCH=arm
@@ -46,7 +46,7 @@ MODULES_DIR=${HOME}/android/AK-anykernel/cwm/system/lib/modules
 KERNEL_DIR=`pwd`
 OUTPUT_DIR=${HOME}/android/AK-anykernel/zip
 CWM_DIR=${HOME}/android/AK-anykernel/cwm
-ZIMAGE_DIR=${HOME}/android/AK-xCm/arch/arm/boot
+ZIMAGE_DIR=${HOME}/android/AK-xGenesis/arch/arm/boot
 CWM_MOVE=/home/anarkia1976/Desktop/AK-Kernel
 ZIMAGE_ANYKERNEL=${HOME}/android/AK-anykernel/cwm/kernel
 ANYKERNEL_DIR=${HOME}/android/AK-anykernel
