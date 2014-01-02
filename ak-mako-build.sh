@@ -10,7 +10,7 @@ clear
 
 # AK Kernel Version
 BASE_AK_VER="AK"
-VER=".008.XGENESIS"
+VER=".009.XGENESIS"
 AK_VER=$BASE_AK_VER$VER
 
 # AK Variables
