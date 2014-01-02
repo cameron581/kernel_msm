@@ -85,7 +85,7 @@ static struct msm_mpdec_tuners {
 	.scroff_single_core = true,
 	.idle_freq = MSM_MPDEC_IDLE_FREQ,
 	.max_cpus = CONFIG_NR_CPUS,
-	.min_cpus = 1,
+	.min_cpus = 2,
 #ifdef CONFIG_MSM_MPDEC_INPUTBOOST_CPUMIN
 	.boost_enabled = true,
 	.boost_time = MSM_MPDEC_BOOSTTIME,
