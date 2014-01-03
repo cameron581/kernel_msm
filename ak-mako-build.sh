@@ -50,6 +50,7 @@ ZIMAGE_DIR=${HOME}/android/AK-xGenesis/arch/arm/boot
 CWM_MOVE=/home/anarkia1976/Desktop/AK-Kernel
 ZIMAGE_ANYKERNEL=${HOME}/android/AK-anykernel/cwm/kernel
 ANYKERNEL_DIR=${HOME}/android/AK-anykernel
+KCONTROL_GPU=${HOME}/android/kcontrol_gpu_msm
 
 echo -e "${red}"; echo "COMPILING VERSION:"; echo -e "${blink_red}"; echo "$LOCALVERSION"; echo -e "${restore}"
 echo "CROSS_COMPILE="$CROSS_COMPILE
@@ -62,6 +63,7 @@ echo "ZIMAGE_DIR="$ZIMAGE_DIR
 echo "CWM_MOVE="$CWM_MOVE
 echo "ZIMAGE_ANYKERNEL="$ZIMAGE_ANYKERNEL
 echo "ANYKERNEL_DIR="$ANYKERNEL_DIR
+echo "KCONTROL_GPU="$KCONTROL_GPU
 
 echo -e "${green}"
 echo "-------------------------"
@@ -74,15 +76,32 @@ make "ak_mako_defconfig"
 make -j3
 
 echo -e "${green}"
-echo "-------------------------"
-echo "Create: AK Kernel and Zip"
-echo "-------------------------"
+echo "--------------------------"
+echo "Copy: Modules to direcroty"
+echo "--------------------------"
 echo -e "${restore}"
 
 rm `echo $MODULES_DIR"/*"`
 find $KERNEL_DIR -name '*.ko' -exec cp -v {} $MODULES_DIR \;
 echo
 
+echo -e "${green}"
+echo "----------------------------"
+echo "Compile: Kcontrol GPU Module"
+echo "----------------------------"
+echo -e "${restore}"
+
+cd $KCONTROL_GPU
+make clean
+make
+cp -vr kcontrol_gpu_msm.ko $MODULES_DIR
+echo
+
+echo -e "${green}"
+echo "----------------------------"
+echo "Create: Zip and moving files"
+echo "----------------------------"
+echo -e "${restore}"
 cp -vr $ZIMAGE_DIR/zImage $ZIMAGE_ANYKERNEL
 echo
 
