@@ -278,7 +278,7 @@ static ssize_t do_kgamma_store(struct device *dev, struct device_attribute *attr
 
 		kgamma[0] = 0xd1 + offset;
 		for (i=0; i<10; i++) {
-			pr_info("kgamma_n [%d] => %d \n", i, kgamma[i]);
+			//pr_info("kgamma_n [%d] => %d \n", i, kgamma[i]);
 			local_power_on_set_1[6+offset].payload[i] = kgamma[i];
 		}
 		return count;
