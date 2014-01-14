@@ -289,8 +289,6 @@ __read_mostly int scheduler_running;
  */
 int sysctl_sched_rt_runtime = 950000;
 
-
-
 /*
  * __task_rq_lock - lock the rq @p resides on.
  */
