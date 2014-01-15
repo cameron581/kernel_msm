@@ -4268,6 +4268,12 @@ int sched_setscheduler(struct task_struct *p, int policy,
 		       const struct sched_param *param)
 {
 	return __sched_setscheduler(p, policy, param, true);
+	struct sched_attr attr = {
+		.sched_policy   = policy,
+		.sched_priority = param->sched_priority,
+		.sched_nice	= PRIO_TO_NICE(p->static_prio),
+	};
+	return __sched_setscheduler(p, &attr, true);
 }
 EXPORT_SYMBOL_GPL(sched_setscheduler);
 
@@ -4286,6 +4292,12 @@ int sched_setscheduler_nocheck(struct task_struct *p, int policy,
 			       const struct sched_param *param)
 {
 	return __sched_setscheduler(p, policy, param, false);
+	struct sched_attr attr = {
+		.sched_policy   = policy,
+		.sched_priority = param->sched_priority,
+		.sched_nice	= PRIO_TO_NICE(p->static_prio),
+	};
+	return __sched_setscheduler(p, &attr, false);
 }
 
 static int
