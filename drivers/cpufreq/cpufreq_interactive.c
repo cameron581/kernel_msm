@@ -129,9 +129,9 @@ static bool io_is_busy = true;
  * up_threshold_any_cpu_freq then do not let the frequency to drop below
  * sync_freq
  */
-static unsigned int up_threshold_any_cpu_load;
-static unsigned int sync_freq;
-static unsigned int up_threshold_any_cpu_freq;
+static unsigned int up_threshold_any_cpu_load = 60;
+static unsigned int sync_freq = 1026000;
+static unsigned int up_threshold_any_cpu_freq = 1350000;
 
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		unsigned int event);
@@ -801,7 +801,7 @@ static ssize_t show_target_loads(
 		ret += sprintf(buf + ret, "%u%s", target_loads[i],
 			       i & 0x1 ? ":" : " ");
 
-	ret += sprintf(buf + --ret, "\n");
+	sprintf(buf + ret - 1, "\n");
 	spin_unlock_irqrestore(&target_loads_lock, flags);
 	return ret;
 }
@@ -844,7 +844,7 @@ static ssize_t show_above_hispeed_delay(
 		ret += sprintf(buf + ret, "%u%s", above_hispeed_delay[i],
 			       i & 0x1 ? ":" : " ");
 
-	ret += sprintf(buf + --ret, "\n");
+	sprintf(buf + ret - 1, "\n");
 	spin_unlock_irqrestore(&above_hispeed_delay_lock, flags);
 	return ret;
 }
