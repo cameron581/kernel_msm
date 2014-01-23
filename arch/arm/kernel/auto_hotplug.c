@@ -90,7 +90,7 @@ struct work_struct hotplug_boost_online_work;
 static unsigned int history[SAMPLING_PERIODS];
 static unsigned int index;
 
-static unsigned int min_online_cpus = 4;
+static unsigned int min_online_cpus = 2;
 static unsigned int max_online_cpus = 4;
 
 static int min_online_cpus_set(const char *arg, const struct kernel_param *kp)
