@@ -138,7 +138,7 @@ static struct kobject *force_fast_charge_kobj;
 
 int force_fast_charge_init(void)
 {
-	int force_fast_charge_retval;
+        int force_fast_charge_retval;
 
          /* Forced fast charge disabled by default */
         force_fast_charge = FAST_CHARGE_DISABLED;
@@ -149,20 +149,23 @@ int force_fast_charge_init(void)
         if (!force_fast_charge_kobj) {
                 return -ENOMEM;
         }
-	force_fast_charge_retval = sysfs_create_group(force_fast_charge_kobj, &force_fast_charge_attr_group);
+
         force_fast_charge_retval
                 = sysfs_create_group(force_fast_charge_kobj,
                                 &force_fast_charge_attr_group);
 
-	if (force_fast_charge_retval)
-		kobject_put(force_fast_charge_kobj);
+        if (force_fast_charge_retval)
+                kobject_put(force_fast_charge_kobj);
 
-	return (force_fast_charge_retval);
+        if (force_fast_charge_retval)
+                kobject_put(force_fast_charge_kobj);
+
+        return (force_fast_charge_retval);
 }
 
 void force_fast_charge_exit(void)
 {
-	kobject_put(force_fast_charge_kobj);
+        kobject_put(force_fast_charge_kobj);
 }
 
 module_init(force_fast_charge_init);
@@ -172,4 +175,3 @@ MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Jean-Pierre Rasquin <yank555.lu@gmail.com>");
 MODULE_AUTHOR("Paul Reioux <reioux@gmail.com>");
 MODULE_DESCRIPTION("Fast Charge Hack for Android");
-
