@@ -65,7 +65,7 @@ static struct kobject *force_fast_charge_kobj;
 
 int force_fast_charge_init(void)
 {
-        int force_fast_charge_retval;
+	int force_fast_charge_retval;
 
         force_fast_charge = FAST_CHARGE_DISABLED; /* Forced fast charge disabled by default */
 
@@ -74,20 +74,17 @@ int force_fast_charge_init(void)
                         return -ENOMEM;
         }
 
-        force_fast_charge_retval = sysfs_create_group(force_fast_charge_kobj, &force_fast_charge_attr_group);
+	force_fast_charge_retval = sysfs_create_group(force_fast_charge_kobj, &force_fast_charge_attr_group);
 
-        if (force_fast_charge_retval)
-                kobject_put(force_fast_charge_kobj);
+	if (force_fast_charge_retval)
+		kobject_put(force_fast_charge_kobj);
 
-        if (force_fast_charge_retval)
-                kobject_put(force_fast_charge_kobj);
-
-        return (force_fast_charge_retval);
+	return (force_fast_charge_retval);
 }
 
 void force_fast_charge_exit(void)
 {
-        kobject_put(force_fast_charge_kobj);
+	kobject_put(force_fast_charge_kobj);
 }
 
 module_init(force_fast_charge_init);
