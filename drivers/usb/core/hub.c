@@ -1947,6 +1947,24 @@ static int usb_enumerate_device(struct usb_device *udev)
                 udev->serial = usb_cache_string(udev, udev->descriptor.iSerialNumber);
         }
         err = usb_enumerate_device_otg(udev);
+	int err;
+
+	if (udev->config == NULL) {
+		err = usb_get_configuration(udev);
+		if (err < 0) {
+			dev_err(&udev->dev, "can't read configurations, error %d\n",
+				err);
+			goto fail;
+		}
+	}
+
+	/* read the standard strings and cache them if present */
+	udev->product = usb_cache_string(udev, udev->descriptor.iProduct);
+	udev->manufacturer = usb_cache_string(udev,
+					      udev->descriptor.iManufacturer);
+	udev->serial = usb_cache_string(udev, udev->descriptor.iSerialNumber);
+
+	err = usb_enumerate_device_otg(udev);
 fail:
         return err;
 }
@@ -2098,17 +2116,14 @@ int usb_deauthorize_device(struct usb_device *usb_dev)
 
         usb_dev->authorized = 0;
         usb_set_configuration(usb_dev, -1);
-
         kfree(usb_dev->product);
         usb_dev->product = kstrdup("n/a (unauthorized)", GFP_KERNEL);
         kfree(usb_dev->manufacturer);
         usb_dev->manufacturer = kstrdup("n/a (unauthorized)", GFP_KERNEL);
         kfree(usb_dev->serial);
         usb_dev->serial = kstrdup("n/a (unauthorized)", GFP_KERNEL);
-
         usb_destroy_configuration(usb_dev);
         usb_dev->descriptor.bNumConfigurations = 0;
-
 out_unauthorized:
         usb_unlock_device(usb_dev);
         return 0;
@@ -2161,8 +2176,41 @@ int usb_authorize_device(struct usb_device *usb_dev)
                 }
         }
         dev_info(&usb_dev->dev, "authorized to connect\n");
+	int result = 0, c;
 
-error_enumerate:
+	usb_lock_device(usb_dev);
+	if (usb_dev->authorized == 1)
+		goto out_authorized;
+
+	result = usb_autoresume_device(usb_dev);
+	if (result < 0) {
+		dev_err(&usb_dev->dev,
+			"can't autoresume for authorization: %d\n", result);
+		goto error_autoresume;
+	}
+	result = usb_get_device_descriptor(usb_dev, sizeof(usb_dev->descriptor));
+	if (result < 0) {
+		dev_err(&usb_dev->dev, "can't re-read device descriptor for "
+			"authorization: %d\n", result);
+		goto error_device_descriptor;
+	}
+
+	usb_dev->authorized = 1;
+	/* Choose and set the configuration.  This registers the interfaces
+	 * with the driver core and lets interface drivers bind to them.
+	 */
+	c = usb_choose_configuration(usb_dev);
+	if (c >= 0) {
+		result = usb_set_configuration(usb_dev, c);
+		if (result) {
+			dev_err(&usb_dev->dev,
+				"can't set config #%d, error %d\n", c, result);
+			/* This need not be fatal.  The user can try to
+			 * set other configurations. */
+		}
+	}
+	dev_info(&usb_dev->dev, "authorized to connect\n");
+
 error_device_descriptor:
         usb_autosuspend_device(usb_dev);
 error_autoresume:
