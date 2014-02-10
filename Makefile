@@ -355,8 +355,8 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 CFLAGS_MODULE   = -fno-pic
 AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	= -mfpu=neon -ftree-vectorize
-AFLAGS_KERNEL	= -mfpu=neon -ftree-vectorize
+CFLAGS_KERNEL	= -mfpu=neon-vfpv4 -ftree-vectorize
+AFLAGS_KERNEL	= -mfpu=neon-vfpv4 -ftree-vectorize
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
@@ -372,7 +372,7 @@ KBUILD_CPPFLAGS := -D__KERNEL__
 #
 # AK LINARO OPT
 #
-CFLAGS_A15 = -mtune=cortex-a15 -mfpu=neon -funsafe-math-optimizations
+CFLAGS_A15 = -mtune=cortex-a15 -mfpu=neon-vfpv4 -funsafe-math-optimizations
 CFLAGS_MODULO = -fmodulo-sched -fmodulo-sched-allow-regmoves
 KERNEL_MODS	= $(CFLAGS_A15) $(CFLAGS_MODULO)
 
