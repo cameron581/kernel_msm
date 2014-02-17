@@ -709,6 +709,8 @@ static int __init msm_cpufreq_register(void)
 	}
 
 	register_hotcpu_notifier(&msm_cpufreq_cpu_notifier);
+	platform_driver_probe(&msm_cpufreq_plat_driver, msm_cpufreq_probe);
+	msm_cpufreq_wq = alloc_workqueue("msm-cpufreq", WQ_HIGHPRI, 0);
 	register_early_suspend(&msm_cpu_early_suspend_handler);
 	return cpufreq_register_driver(&msm_cpufreq_driver);
 }
