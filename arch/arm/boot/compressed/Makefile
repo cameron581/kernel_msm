@@ -5,6 +5,7 @@
 #
 
 OBJS                =
+OBJS		=
 
 # Ensure that MMCIF loader code appears early in the image
 # to minimise that number of bocks that have to be read in
@@ -26,6 +27,23 @@ HEAD        = head.o
 OBJS        += misc.o decompress.o
 FONTC        = $(srctree)/drivers/video/console/font_acorn_8x8.c
 
+OBJS		+= mmcif-sh7372.o
+endif
+
+# Ensure that SDHI loader code appears early in the image
+# to minimise that number of bocks that have to be read in
+# order to load it.
+ifeq ($(CONFIG_ZBOOT_ROM_SH_MOBILE_SDHI),y)
+OBJS		+= sdhi-shmobile.o
+OBJS		+= sdhi-sh7372.o
+endif
+
+AFLAGS_head.o += -DTEXT_OFFSET=$(TEXT_OFFSET)
+HEAD	= head.o
+OBJS	+= misc.o decompress.o
+FONTC	= $(srctree)/drivers/video/console/font_acorn_8x8.c
+
+>>>>>>> parent of 852da6b... Google GCC 4.8 patches
 # string library code (-Os is enforced to keep it much smaller)
 OBJS                += string.o
 CFLAGS_string.o        := -Os
@@ -119,6 +137,13 @@ targets       := vmlinux vmlinux.lds \
 # Make sure files are removed during clean
 extra-y       += piggy.gzip piggy.lzo piggy.lzma piggy.xzkern \
                  lib1funcs.S ashldi3.S $(libfdt) $(libfdt_hdrs)
+		 piggy.$(suffix_y) piggy.$(suffix_y).o \
+		 lib1funcs.o lib1funcs.S ashldi3.o ashldi3.S \
+		 font.o font.c head.o misc.o $(OBJS)
+
+# Make sure files are removed during clean
+extra-y       += piggy.gzip piggy.lzo piggy.lzma piggy.xzkern \
+		 lib1funcs.S ashldi3.S $(libfdt) $(libfdt_hdrs)
 
 ifeq ($(CONFIG_FUNCTION_TRACER),y)
 ORIG_CFLAGS := $(KBUILD_CFLAGS)
@@ -126,7 +151,7 @@ KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
 ccflags-y := -fpic -fno-builtin -I$(obj)
-asflags-y :=
+asflags-y := -Wa,-march=all
 
 # Supply kernel BSS size to the decompressor via a linker symbol.
 KBSS_SZ = $(shell $(CROSS_COMPILE)size $(obj)/../../../../vmlinux | \
@@ -182,6 +207,13 @@ fi
 
 $(obj)/vmlinux: $(obj)/vmlinux.lds $(obj)/$(HEAD) $(obj)/piggy.$(suffix_y).o \
                 $(addprefix $(obj)/, $(OBJS)) $(lib1funcs) $(ashldi3) FORCE
+	echo 'multiple zreladdrs: $(ZRELADDR)'; \
+	echo 'This needs CONFIG_AUTO_ZRELADDR to be set'; \
+	false; \
+fi
+
+$(obj)/vmlinux: $(obj)/vmlinux.lds $(obj)/$(HEAD) $(obj)/piggy.$(suffix_y).o \
+		$(addprefix $(obj)/, $(OBJS)) $(lib1funcs) $(ashldi3) FORCE
 	@$(check_for_multiple_zreladdr)
 	$(call if_changed,ld)
 	@$(check_for_bad_syms)

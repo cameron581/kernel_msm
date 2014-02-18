@@ -248,6 +248,10 @@ HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
 HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer
 HOSTCXXFLAGS = -O3
+HOSTCC       = gcc
+HOSTCXX      = g++
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
+HOSTCXXFLAGS = -O2
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -366,7 +370,7 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
 KBUILD_CPPFLAGS := -D__KERNEL__
 
 #
-# Barracuda 4.8.3 Optimizations
+# Arkenstone Optimizations
 #
 CFLAGS_A15 = -mtune=cortex-a15 -mfpu=neon -funsafe-math-optimizations -ftree-vectorize
 CFLAGS_MODULO = -fmodulo-sched -fmodulo-sched-allow-regmoves
@@ -383,6 +387,11 @@ KBUILD_CFLAGS := -O3 -funswitch-loops \
                  -Wno-sizeof-pointer-memaccess \
                  $(KERNEL_MODS)
 
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+		   -fno-strict-aliasing -fno-common \
+		   -Werror-implicit-function-declaration \
+		   -Wno-format-security \
+		   -fno-delete-null-pointer-checks
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -578,6 +587,7 @@ else
 KBUILD_CFLAGS	+= -O3
 KBUILD_CFLAGS   += $(call cc-disable-warning,maybe-uninitialized)
 KBUILD_CFLAGS   += $(call cc-disable-warning,array-bounds)
+KBUILD_CFLAGS	+= -O2
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
