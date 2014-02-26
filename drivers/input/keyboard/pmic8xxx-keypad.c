@@ -20,6 +20,11 @@
 #include <linux/delay.h>
 #include <linux/mutex.h>
 
+#ifdef CONFIG_VK_REMAP
+#include <linux/device.h>
+#include <linux/miscdevice.h>
+#endif
+
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/mfd/pm8xxx/gpio.h>
 #include <linux/input/pmic8xxx-keypad.h>
@@ -82,6 +87,88 @@
 #define KEYP_OLD_DATA			0x14C
 
 #define KEYP_CLOCK_FREQ			32768
+
+#ifdef CONFIG_VK_REMAP
+static unsigned int keymap[] = {
+        KEY(0, 0, KEY_VOLUMEDOWN),
+        KEY(0, 1, KEY_VOLUMEUP),
+};
+
+static unsigned int keymap_inverted[] = {
+        KEY(0, 0, KEY_VOLUMEUP),
+        KEY(0, 1, KEY_VOLUMEDOWN),
+};
+
+static struct matrix_keymap_data keymap_data = {
+        .keymap_size    = ARRAY_SIZE(keymap),
+        .keymap         = keymap,
+};
+
+static unsigned int vk_invert = 0;
+static unsigned int vk_ch_f = 1;
+
+static ssize_t volkeys_read(struct device * dev, struct device_attribute * attr, char * buf)
+{
+	return sprintf(buf, "%u\n", vk_invert);
+}
+
+static ssize_t volkeys_write(struct device * dev, struct device_attribute * attr, const char * buf, size_t size)
+{
+	unsigned int input;
+	int ret;
+	ret = sscanf(buf, "%u", &input);
+	if (input != 0 && input != 1)
+		input = 0;
+	vk_invert = input;
+	vk_ch_f = 0;
+	return size;
+}
+
+static DEVICE_ATTR(vk_invert, S_IRUGO | S_IWUGO, volkeys_read, volkeys_write);
+
+static struct attribute *volkeys_attributes[] = 
+    {
+	&dev_attr_vk_invert.attr,
+	NULL
+    };
+
+static struct attribute_group volkeys_group = 
+    { 
+	.attrs  = volkeys_attributes, 
+    };
+
+static struct miscdevice volkeys_device = 
+    {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = "vol_keys",
+    };
+
+static int __init volkeys_init(void)
+{
+    int ret;
+
+    pr_info("%s misc_register(%s)\n", __FUNCTION__, volkeys_device.name);
+
+    ret = misc_register(&volkeys_device);
+
+    if (ret) 
+	{
+	    pr_err("%s misc_register(%s) fail\n", __FUNCTION__, volkeys_device.name);
+	    return 1;
+	}
+
+    if (sysfs_create_group(&volkeys_device.this_device->kobj, &volkeys_group) < 0) 
+	{
+	    pr_err("%s sysfs_create_group fail\n", __FUNCTION__);
+	    pr_err("Failed to create sysfs group for device (%s)!\n", volkeys_device.name);
+	}
+
+    return 0;
+}
+
+device_initcall(volkeys_init);
+
+#endif
 
 /**
  * struct pmic8xxx_kp - internal keypad data structure
@@ -321,6 +408,19 @@ static int pmic8xxx_kp_scan_matrix(struct pmic8xxx_kp *kp, unsigned int events)
 	u16 old_state[PM8XXX_MAX_ROWS];
 	int rc;
 
+#ifdef CONFIG_VK_REMAP
+	if(vk_ch_f == 0) {
+	    printk(KERN_INFO "vol keys invert!\n");
+	    if(vk_invert == 0)
+		keymap_data.keymap = keymap;
+	    else
+		keymap_data.keymap = keymap_inverted;
+
+	    matrix_keypad_build_keymap(&keymap_data, PM8XXX_ROW_SHIFT, kp->input->keycode, kp->input->keybit);
+	    input_set_drvdata(kp->input, kp);
+	    vk_ch_f++;
+	}
+#endif
 	switch (events) {
 	case 0x1:
 		rc = pmic8xxx_kp_read_matrix(kp, new_state, NULL);
@@ -483,6 +583,7 @@ static int pmic8xxx_kp_enable(struct pmic8xxx_kp *kp)
 	int rc;
 
 	kp->ctrl_reg |= KEYP_CTRL_KEYP_EN;
+
 
 	rc = pmic8xxx_kp_write_u8(kp, kp->ctrl_reg, KEYP_CTRL);
 	if (rc < 0)

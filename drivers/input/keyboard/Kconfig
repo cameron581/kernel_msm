@@ -440,6 +440,12 @@ config KEYBOARD_PMIC8XXX
 	  To compile this driver as a module, choose M here: the module will
 	  be called pmic8xxx-keypad.
 
+config VK_REMAP
+	tristate "PMIC8XXX volume keys remap"
+	depends on MFD_PM8XXX
+	help
+	  Say Y here if you want to enable volume keys remapping via sysfs
+
 config KEYBOARD_SAMSUNG
 	tristate "Samsung keypad support"
 	depends on HAVE_CLK
