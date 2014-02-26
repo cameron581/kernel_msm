@@ -664,6 +664,25 @@ static ssize_t store_UV_mV_table(struct cpufreq_policy *policy, const char *buf,
 
 #endif
 
+#ifdef CONFIG_GPU_VOLTAGE_TABLE
+extern ssize_t get_gpu_vdd_levels_str(char *buf);
+extern void set_gpu_vdd_levels(int uv_tbl[]);
+
+ssize_t show_vdd_levels_GPU(struct kobject *a, struct attribute *b, char *buf)
+{
+//  int modu = 0;
+  return get_gpu_vdd_levels_str(buf);
+}
+
+ssize_t store_vdd_levels_GPU(struct kobject *a, struct attribute *b, const char *buf, size_t count)
+{
+  unsigned int ret = -EINVAL;
+  unsigned int u[3];
+  ret = sscanf(buf, "%d %d %d", &u[0], &u[1], &u[2]);
+  set_gpu_vdd_levels(u);
+  return count;
+}
+#endif
 cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0400);
 cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
@@ -683,7 +702,9 @@ cpufreq_freq_attr_rw(dvfs_test);
 #ifdef CONFIG_MSM_CPU_VOLTAGE_CONTROL
 cpufreq_freq_attr_rw(UV_mV_table);
 #endif
-
+#ifdef CONFIG_GPU_VOLTAGE_TABLE
+define_one_global_rw(vdd_levels_GPU);
+#endif
 static struct attribute *default_attrs[] = {
 	&cpuinfo_min_freq.attr,
 	&cpuinfo_max_freq.attr,
@@ -703,6 +724,18 @@ static struct attribute *default_attrs[] = {
 #endif
 	NULL
 };
+
+#ifdef CONFIG_GPU_VOLTAGE_TABLE
+static struct attribute *vddtbl_attrs[] = {
+	&vdd_levels_GPU.attr,
+	NULL
+};
+
+static struct attribute_group vddtbl_attr_group = {
+	.attrs = vddtbl_attrs,
+	.name = "vdd_table",
+};
+#endif
 
 struct kobject *cpufreq_global_kobject;
 EXPORT_SYMBOL(cpufreq_global_kobject);
@@ -2198,7 +2231,9 @@ EXPORT_SYMBOL_GPL(cpufreq_unregister_driver);
 static int __init cpufreq_core_init(void)
 {
 	int cpu;
-
+#ifdef CONFIG_GPU_VOLTAGE_TABLE
+	int rc;
+#endif
 	if (cpufreq_disabled())
 		return -ENODEV;
 
@@ -2210,7 +2245,9 @@ static int __init cpufreq_core_init(void)
 	cpufreq_global_kobject = kobject_create_and_add("cpufreq", &cpu_subsys.dev_root->kobj);
 	BUG_ON(!cpufreq_global_kobject);
 	register_syscore_ops(&cpufreq_syscore_ops);
-
+#ifdef CONFIG_GPU_VOLTAGE_TABLE
+	rc = sysfs_create_group(cpufreq_global_kobject, &vddtbl_attr_group);
+#endif
 	return 0;
 }
 core_initcall(cpufreq_core_init);

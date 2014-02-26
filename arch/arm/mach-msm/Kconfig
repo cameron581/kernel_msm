@@ -1629,6 +1629,12 @@ config MSM_MPDEC_INPUTBOOST_CPUMIN
 
 if CPU_FREQ_MSM
 
+config GPU_VOLTAGE_TABLE
+    bool "Enable GPU Voltage Table via sysfs for adjustements"
+    default n
+    help
+	Adreno GPU User Voltage Control 
+
 config INTELLI_PLUG
        bool "Enable intelli-plug cpu hotplug driver"
        default n
