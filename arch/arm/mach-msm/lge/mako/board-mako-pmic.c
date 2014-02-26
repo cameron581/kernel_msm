@@ -596,8 +596,8 @@ struct pm8921_bms_battery_data lge_2100_mako_data =  {
 };
 
 static unsigned int keymap[] = {
-	KEY(0, 0, KEY_VOLUMEUP),
-	KEY(0, 1, KEY_VOLUMEDOWN),
+	KEY(0, 0, KEY_VOLUMEDOWN),
+	KEY(0, 1, KEY_VOLUMEUP),
 };
 
 static struct matrix_keymap_data keymap_data = {
