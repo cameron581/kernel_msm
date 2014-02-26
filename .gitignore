@@ -9,6 +9,11 @@
 #
 # Normal rules
 #
+1.sh
+*_
+*__
+*.out
+*.org
 .*
 *.o
 *.o.*
