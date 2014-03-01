@@ -205,8 +205,9 @@ static unsigned long highmem_dirtyable_memory(unsigned long total)
 	 * accurate calculation but make sure that the total never
 	 * underflows.
 	 */
-	 if ((long)x < 0)
+	if ((long)x < 0)
 		x = 0;
+		
 	 /*
 	 * Make sure that the number of highmem pages is never larger
 	 * than the number of the total dirtyable memory. This can only
@@ -297,7 +298,8 @@ static unsigned long zone_dirtyable_memory(struct zone *zone)
 	 * highmem zone can hold its share of dirty pages, so we don't
 	 * care about vm_highmem_is_dirtyable here.
 	 */
-	 unsigned long nr_pages = zone_page_state(zone, NR_FREE_PAGES) + zone_reclaimable_pages(zone);
+	 unsigned long nr_pages = zone_page_state(zone, NR_FREE_PAGES) +
+	 	zone_reclaimable_pages(zone);
 
 	 /* don't allow this to underflow */
 	 nr_pages -= min(nr_pages, zone->dirty_balance_reserve);
