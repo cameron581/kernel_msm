@@ -195,7 +195,6 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	}
 #ifdef CONFIG_TOUCHSCREEN_PREVENT_SLEEP
 #ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
-	power_on_display(pwr);
 	pr_info("[wake_up_display]: set device %s\n", pwr->name);
 #else
         power_on_display_dt2w(pwr);
