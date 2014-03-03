@@ -6,6 +6,11 @@
 
 wm97xx-ts-y := wm97xx-core.o
 
+# for sweep2wake, leave 1st to avoid merge issues at the end of the file
+obj-$(CONFIG_TOUCHSCREEN_SWEEP2WAKE)		+= sweep2wake.o
+# for doubletap2wake, leave 1st to avoid merge issues at the end of the file
+obj-$(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE)	+= doubletap2wake.o
+
 obj-$(CONFIG_TOUCHSCREEN_88PM860X)	+= 88pm860x-ts.o
 obj-$(CONFIG_TOUCHSCREEN_AD7877)	+= ad7877.o
 obj-$(CONFIG_TOUCHSCREEN_AD7879)	+= ad7879.o
@@ -77,7 +82,9 @@ obj-$(CONFIG_TOUCHSCREEN_TPS6507X)	+= tps6507x-ts.o
 obj-$(CONFIG_TOUCHSCREEN_MSM_LEGACY)		+= msm_touch.o
 obj-$(CONFIG_TOUCHSCREEN_CY8C_TS)	+= cy8c_ts.o
 obj-$(CONFIG_TOUCHSCREEN_CYTTSP_I2C_QC)       += cyttsp-i2c-qc.o
-obj-$(CONFIG_TOUCHSCREEN_LGE_COMMON)	+= lge_touch_core.o
-obj-$(CONFIG_TOUCHSCREEN_LGE_SYNAPTICS) += touch_synaptics.o
-obj-$(CONFIG_TOUCHSCREEN_LGE_SYNAPTICS) += touch_synaptics_ds4_fw_upgrade.o
 obj-$(CONFIG_TOUCHSCREEN_ELAN_TF_3K)    += ektf3k.o
+obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI4) += lge_touch_core.o
+obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI4) += touch_synaptics.o
+obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI4) += touch_synaptics_ds4_fw_upgrade.o
+obj-$(CONFIG_TOUCHSCREEN_ELAN_TF_3K)    += ektf3k.o
+obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI4)	+= DS4/

@@ -60,10 +60,19 @@ unchar sp_get_ds_cable_type(void);
 
 #ifdef CONFIG_SLIMPORT_ANX7808
 bool slimport_is_connected(void);
+unchar slimport_get_link_bw(void);
+void sp_set_link_bw(unchar link_bw);
 #else
 static inline bool slimport_is_connected(void)
 {
 	return false;
+}
+static inline unchar slimport_get_link_bw(void)
+{
+	return 0;
+}
+static inline void sp_set_link_bw(unchar link_bw)
+{
 }
 #endif
 
