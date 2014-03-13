@@ -55,8 +55,6 @@ int sp_write_reg(uint8_t slave_addr, uint8_t offset, uint8_t value);
 void sp_tx_hardware_poweron(void);
 void sp_tx_hardware_powerdown(void);
 int slimport_read_edid_block(int block, uint8_t *edid_buf);
-unchar slimport_get_link_bw(void);
-unchar sp_get_ds_cable_type(void);
 
 #ifdef CONFIG_SLIMPORT_ANX7808
 bool slimport_is_connected(void);
@@ -75,5 +73,4 @@ static inline void sp_set_link_bw(unchar link_bw)
 {
 }
 #endif
-
 #endif
