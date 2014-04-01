@@ -61,7 +61,7 @@
 #include "aniGlobal.h"
 
 
-#ifdef TRACE_RECORD
+#ifndef TRACE_RECORD
 
 #define CASE_RETURN_STRING( str )           \
     case ( ( str ) ): return( (tANI_U8*)(#str) ); break \
