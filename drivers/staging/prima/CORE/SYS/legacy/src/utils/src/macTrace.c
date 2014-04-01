@@ -73,7 +73,7 @@
 #include "limGlobal.h"
 #include "wlan_qct_tl.h"
 
-#ifndef TRACE_RECORD
+#ifdef TRACE_RECORD
 static tTraceRecord gTraceTbl[MAX_TRACE_RECORDS];
 static tTraceData gTraceData;
 static tpTraceCb traceCBTable[VOS_MODULE_ID_MAX];
