@@ -819,7 +819,7 @@ u32 vid_enc_set_get_session_qp(struct video_client_ctx *client_ctx,
 			ERR("%s(): Set VCD_I_SESSION_QP Failed\n",
 					__func__);
 			return false;
-		} else {long
+		} else {
 			session_qp->iframeqp = qp.i_frame_qp;
 			session_qp->pframqp = qp.p_frame_qp;
 		}
